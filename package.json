@@ -1,0 +1,19 @@
+{
+  "author": "Colin Ross <colin@colinscape.com> (http://colinscape.com/)",
+  "name": "earley-parser",
+  "description": "An Earley parser",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/colinscape/earley-parser.git"
+  },
+  "main": "./earley-parser.coffee",
+  "engines": {
+    "node": "0.6.6"
+  },
+  "dependencies": {
+    "underscore": "1.2.4",
+    "jasmin-node": "1.0.13"
+  },
+  "devDependencies": {}
+}
