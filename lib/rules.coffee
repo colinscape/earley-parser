@@ -12,11 +12,17 @@ class Rule
   clone: () ->
     return new Rule @target, _.clone @body
 
-class InitialRule extends Rule
-  constructor: (@body) ->
+  getLength: () ->
+    return @body.length
 
-  getTarget: () ->
-    return '@'
+  display: (parse) ->
+    info = _.clone @body
+    info.splice parse, 0, '@'
+    return "#{@target} -> #{info.join ' '}"
+
+class InitialRule extends Rule
+  constructor: (grammar) ->
+    super 'GAMMA', [grammar.getRoot()]
 
 module.exports.Rule = Rule
 module.exports.InitialRule = InitialRule

@@ -2,46 +2,59 @@ _ = require 'underscore'
 lib =
   rules: require './rules'
   state: require './state'
+  chart: require './chart'
+  result: require './result'
 
 parse = (words, grammar) ->
 
-  if words.length is 0 then return []
-  chart = []
-  _.times words.length, () -> chart.push []
-  initialRule = new lib.rules.InitialRule grammar.getRoot()
-  chart[0].enqueue initialRule, 0
-  
-  for word,i in words
-    for state in chart[i]
-      if state.isIncomplete()
-        if state.nextCategoryIsNonTerminal()
-          predict state, i, grammar, chart
-        else scan state, i, word, grammar, chart
-      else
-        complete state, i, chart
-  return chart
+  if words.length is 0 then return new lib.chart.Chart []
 
-predict = (state, j, grammar, chart) ->
+  charts = []
+  _.times (words.length+1), () -> charts.push (new lib.chart.Chart())
+  initialRule = new lib.rules.InitialRule grammar
+  initialState = new lib.state.State initialRule, 0
+  charts[0].enqueue initialState
+  
+  for i in [0..words.length]
+    word = words[i]
+    iState = 0
+    while charts[i].getStates()[iState]?
+      state = charts[i].getStates()[iState]
+      if state.isIncomplete()
+        if state.isNextCategoryNonTerminal(grammar)
+          predict state, i, grammar, charts
+        else
+          scan state, i, word, grammar, charts
+      else
+        complete state, i, charts
+      ++iState
+  return new lib.result.Result charts
+
+predict = (state, j, grammar, charts) ->
   b = state.getNext()
   rules = grammar.getRulesFor b
   for rule in rules
-    chart[j].enqueue rule, j
+    newState = new lib.state.State rule, j
+    charts[j].enqueue newState
 
-scan = (state, j, word, grammar, chart) ->
+scan = (state, j, word, grammar, charts) ->
   b = state.getNext()
   i = state.getIndex()
   if b in grammar.getPartsOfSpeechFor word
-    rule = new lib.rules.Rule b, word
-    chart[j+1].enqueue rule, i
+    rule = new lib.rules.Rule b, [word]
+    newState = new lib.state.State rule, i
+    newState.incrementParse()
+    charts[j+1].enqueue newState
 
-complete = (state, k, chart) ->
+complete = (state, k, charts) ->
   b = state.getTarget()
   j = state.getIndex() 
-  for state in chart[j]
+  for state in charts[j].getStates()
     i = state.getIndex()
     next = state.getNext()
     if next is b
-      rule = state.clone().incrementParse()
-      chart[k].enqueue rule,i 
+      newState = state.clone(i)
+      newState.incrementParse()
+      charts[k].enqueue newState
 
 module.exports.parse = parse

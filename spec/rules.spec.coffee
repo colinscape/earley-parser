@@ -23,6 +23,10 @@ describe 'Rules', () ->
     rule.body[0] = 'SURPRISE'
     expect(rule.getCategory 0).toEqual 'SURPRISE'
     expect(clonedRule.getCategory 0).toEqual 'first'
+
+  it 'should have a length', () ->
+    rule = new rules.Rule 'TARGET', ['first', 'second']
+    expect(rule.getLength()).toEqual 2
     
 
 
