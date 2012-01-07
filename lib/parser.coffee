@@ -1,10 +1,14 @@
-lib.rules = require './lib/rules'
-lib.state = require './lib/state'
+_ = require 'underscore'
+lib =
+  rules: require './rules'
+  state: require './state'
 
 parse = (words, grammar) ->
+
+  if words.length is 0 then return []
   chart = []
-  _.times word.length, () -> chart.push []
-  initialRule = new lib.rulesInitialRule grammar.getRoot()
+  _.times words.length, () -> chart.push []
+  initialRule = new lib.rules.InitialRule grammar.getRoot()
   chart[0].enqueue initialRule, 0
   
   for word,i in words
@@ -39,3 +43,5 @@ complete = (state, k, chart) ->
     if next is b
       rule = state.clone().incrementParse()
       chart[k].enqueue rule,i 
+
+module.exports.parse = parse
