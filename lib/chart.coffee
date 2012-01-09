@@ -5,7 +5,9 @@ class Chart
     @states = []
     @present = {}
 
-  enqueue: (state) ->
+  enqueue: (state, previous) ->
+    if previous?
+      state.addPrevious previous 
     hash = state.getHash()
     if not @present[hash]
       @states.push state

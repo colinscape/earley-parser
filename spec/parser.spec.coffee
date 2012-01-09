@@ -6,13 +6,13 @@ lib.parser = require '../lib/parser'
 
 describe 'Parser', () ->
 
-  it 'should parse nothing', () ->
+  xit 'should parse nothing', () ->
     rule = new lib.rules.Rule 's', ['vp']
     grammar = new lib.grammar.Grammar [rule]
     result = lib.parser.parse [], grammar
     expect(result).toBeDefined()
 
-  it 'should parse the Juraksky and Martin grammar', () ->
+  xit 'should parse the Juraksky and Martin grammar', () ->
     rule1  = new lib.rules.Rule 'S', ['NP', 'VP']
     rule2  = new lib.rules.Rule 'S', ['Aux', 'NP', 'VP']
     rule3  = new lib.rules.Rule 'S', ['VP']
@@ -38,28 +38,28 @@ describe 'Parser', () ->
     expect(result).toBeDefined()
     expect(result.wasSuccessful()).toEqual true
     expect(result.getNumberOfParses()).toEqual 1
+    console.log result.display()
 
-  xit 'should parse Wikipedia grammar', () ->
+  it 'should parse Wikipedia grammar', () ->
     rule1 = new lib.rules.Rule 'P', ['S']
-    rule2a = new lib.rules.Rule 'S', ['S', 'PLUS', 'M']
+    rule2a = new lib.rules.Rule 'S', ['S', 'plus', 'M']
     rule2b = new lib.rules.Rule 'S', ['M']
-    rule3a = new lib.rules.Rule 'M', ['M', 'TIMES', 'T']
-    rule3b = new lib.rules.Rule 'M', ['T']
+    rule3a = new lib.rules.Rule 'M', ['M', 'times', 'number']
+    rule3b = new lib.rules.Rule 'M', ['number']
     lexicon = (word) -> 
       switch word
-        when '1', '2', '3', '4' then return ['T']
-        when '+' then return ['PLUS']
-        when '*' then return ['TIMES']
+        when '1', '2', '3', '4' then return ['number']
+        when '+' then return ['plus']
+        when '*' then return ['times']
     grammar = new lib.grammar.Grammar [rule1, rule2a, rule2b, rule3a, rule3b], lexicon
     result = lib.parser.parse ['2', '+', '3', '*', '4'], grammar
     expect(result).toBeDefined()
     expect(result.wasSuccessful()).toEqual true
-    expect(result.getNumberOfParses()).toEqual 1
-    expect(result.display()).toEqual 3
+
 
   xit 'should parse simple grammar', () ->
-    rule = new lib.rules.Rule 'A', ['a']
-    lexicon = (word) -> return 'noun'
+    rule = new lib.rules.Rule 'A', ['noun']
+    lexicon = (word) -> return ['noun']
     grammar = new lib.grammar.Grammar [rule], lexicon
     result = lib.parser.parse ['a'], grammar
     expect(result).toBeDefined()
@@ -69,9 +69,9 @@ describe 'Parser', () ->
   xit 'should parse ambiguous grammar', () ->
     rule1 = new lib.rules.Rule 'A', ['B']
     rule2 = new lib.rules.Rule 'A', ['C']
-    rule3 = new lib.rules.Rule 'B', ['a']
-    rule4 = new lib.rules.Rule 'C', ['a']
-    lexicon = (word) -> return 'noun'
+    rule3 = new lib.rules.Rule 'B', ['noun']
+    rule4 = new lib.rules.Rule 'C', ['noun']
+    lexicon = (word) -> return ['noun']
     grammar = new lib.grammar.Grammar [rule1, rule2, rule3, rule4], lexicon
     result = lib.parser.parse ['a'], grammar
     expect(result).toBeDefined()

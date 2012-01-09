@@ -12,8 +12,8 @@ class Result
     lastChart = _.last @charts
     if not lastChart? then return 1    
     for state in lastChart.getStates()
-      if state.isComplete() and state.getIndex() is 0 and state.getTarget() is 'GAMMA'
-        ++nParses
+      if state.isComplete() and state.getStart() is 0 and state.getTarget() is 'GAMMA'
+        nParses = nParses + 1
     return nParses
 
   display: () ->

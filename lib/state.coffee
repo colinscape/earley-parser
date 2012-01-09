@@ -1,7 +1,9 @@
 class State
-  constructor: (@rule, @index, @parse) ->
-    @index = 0 if not @index?
+  constructor: (@rule, @start, @length, @parse) ->
+    @start = 0 if not @start?
+    @length = 0 if not @length?
     @parse = 0 if not @parse?
+    @previous = []
 
   getTarget: () ->
     return @rule.getTarget()
@@ -9,9 +11,9 @@ class State
   getNext: () ->
     return @rule.getCategory @parse
 
-  clone: (i) ->
+  clone: (length) ->
     rule = @rule.clone()
-    return new State rule, i, @parse
+    return new State rule, @start, length, @parse
 
   incrementParse: () ->
     ++@parse
@@ -22,7 +24,7 @@ class State
     return rules.length isnt 0
 
   getHash: () ->
-    return "#{@rule.display @parse} (#{@index})"
+    return @display()
 
   isIncomplete: () ->
     return @parse isnt @rule.getLength()
@@ -31,9 +33,17 @@ class State
     return @parse is @rule.getLength()
     
   display: () ->
-    return "#{@rule.display(@parse)} (#{@index})"
+    previousDisplay = (p.display() for p in @previous)
+    return "#{@rule.display @parse} (#{@start},#{@length})   [#{previousDisplay.join ']['}]"
 
-  getIndex: () ->
-    return @index
+  getStart: () ->
+    return @start
+
+  getLength: () ->
+    return @length
+
+
+  addPrevious: (previous) ->
+    @previous.push previous
 
 module.exports.State = State

@@ -80,11 +80,11 @@ describe 'State', () ->
   it 'should be incomplete when not parsed fully', () ->
     rule = new lib.rules.Rule 'TARGET', [0,1,2,3,4]
 
-    state1 = new lib.state.State rule, 0, 0
+    state1 = new lib.state.State rule, 0, 0, 0
     expect(state1.isIncomplete()).toEqual true
 
-    state2 = new lib.state.State rule, 0, 3
+    state2 = new lib.state.State rule, 0, 0, 3
     expect(state2.isIncomplete()).toEqual true
 
-    state3 = new lib.state.State rule, 0, 5
+    state3 = new lib.state.State rule, 0, 0, 5
     expect(state3.isIncomplete()).toEqual false
