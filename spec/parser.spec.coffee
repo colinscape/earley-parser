@@ -6,13 +6,13 @@ lib.parser = require '../lib/parser'
 
 describe 'Parser', () ->
 
-  xit 'should parse nothing', () ->
+  it 'should parse nothing', () ->
     rule = new lib.rules.Rule 's', ['vp']
     grammar = new lib.grammar.Grammar [rule]
     result = lib.parser.parse [], grammar
     expect(result).toBeDefined()
 
-  xit 'should parse the Juraksky and Martin grammar', () ->
+  it 'should parse the Juraksky and Martin grammar', () ->
     rule1  = new lib.rules.Rule 'S', ['NP', 'VP']
     rule2  = new lib.rules.Rule 'S', ['Aux', 'NP', 'VP']
     rule3  = new lib.rules.Rule 'S', ['VP']
@@ -38,7 +38,6 @@ describe 'Parser', () ->
     expect(result).toBeDefined()
     expect(result.wasSuccessful()).toEqual true
     expect(result.getNumberOfParses()).toEqual 1
-    console.log result.display()
 
   it 'should parse Wikipedia grammar', () ->
     rule1 = new lib.rules.Rule 'P', ['S']
@@ -57,7 +56,7 @@ describe 'Parser', () ->
     expect(result.wasSuccessful()).toEqual true
 
 
-  xit 'should parse simple grammar', () ->
+  it 'should parse simple grammar', () ->
     rule = new lib.rules.Rule 'A', ['noun']
     lexicon = (word) -> return ['noun']
     grammar = new lib.grammar.Grammar [rule], lexicon
@@ -66,7 +65,7 @@ describe 'Parser', () ->
     expect(result.wasSuccessful()).toEqual true
     expect(result.getNumberOfParses()).toEqual 1
 
-  xit 'should parse ambiguous grammar', () ->
+  it 'should parse ambiguous grammar', () ->
     rule1 = new lib.rules.Rule 'A', ['B']
     rule2 = new lib.rules.Rule 'A', ['C']
     rule3 = new lib.rules.Rule 'B', ['noun']
