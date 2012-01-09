@@ -77,4 +77,23 @@ describe 'Parser', () ->
     expect(result.wasSuccessful()).toEqual true
     expect(result.getNumberOfParses()).toEqual 2
 
+  it 'should parse ambiguous English grammar', () ->
+    rule1a = new lib.rules.Rule 'S', ['VP']
+    rule1b = new lib.rules.Rule 'S', ['VP', 'PP']
+    rule2a = new lib.rules.Rule 'VP', ['Verb', 'NP']
+    rule2b = new lib.rules.Rule 'PP', ['Prep', 'NP']
+    rule3a = new lib.rules.Rule 'NP', ['Noun']
+    rule3b = new lib.rules.Rule 'NP', ['Noun', 'PP']
 
+    lexicon = (word) -> 
+      pos = []
+      if word in ['man', 'sword'] then pos.push 'Noun'
+      if word in ['with'] then pos.push 'Prep'
+      if word in ['kill'] then pos.push 'Verb'
+      return pos
+
+    grammar = new lib.grammar.Grammar [rule1a, rule1b, rule2a, rule2b, rule3a, rule3b], lexicon
+    result = lib.parser.parse ['kill', 'man', 'with', 'sword'], grammar
+    expect(result).toBeDefined()
+    expect(result.wasSuccessful()).toEqual true
+    expect(result.getNumberOfParses()).toEqual 2
